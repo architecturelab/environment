@@ -1,61 +1,10 @@
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: kafka-1-prod
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      component: kafka-1-prod
-  template:
-    metadata:
-      labels:
-        component: kafka-1-prod
-    spec:
-      containers:
-      - name: kafka-1-prod 
-        image: wurstmeister/kafka
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        ports:
-          - containerPort: 9092
-        env:
-          - name: KAFKA_ADVERTISED_PORT
-            value: "9092"
-          - name: KAFKA_ZOOKEEPER_CONNECT
-            value: zookeeper-ip-service-prod:2181
-          - name: KAFKA_ADVERTISED_PORT
-            value: "9092"
-          - name: KAFKA_ADVERTISED_HOST_NAME
-            value: 34.67.106.181
-        tty: true
-        livenessProbe:
-          exec:
-            command:
-              - /opt/check.sh
-          initialDelaySeconds: 30
-          periodSeconds: 30
-        readinessProbe:
-          exec:
-            command:
-              - /opt/check.sh
-          initialDelaySeconds: 30
-          periodSeconds: 5
-        # command:
-        #   - /bin/bash
-      imagePullSecrets:
-        - name: regcred
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-1-ip-service-prod
+  name: kafka-service-prod
+  labels:
+    name: kafka-prod
 spec:
   ports:
   - port: 9092
@@ -67,4 +16,38 @@ spec:
     id: "0"
   type: LoadBalancer
   loadBalancerIP: "34.67.106.181"
-          
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: kafka-prod
+        id: "0"
+  template:
+    metadata:
+      labels:
+        app: kafka-prod
+        id: "0"
+    spec:
+      containers:
+      - name: kafka-prod
+        image: wurstmeister/kafka
+        ports:
+        - containerPort: 9092
+        env:
+        - name: KAFKA_ADVERTISED_PORT
+          value: "30718"
+        - name: KAFKA_ADVERTISED_HOST_NAME
+          value: 34.67.106.181
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zookeeper-prod:2181
+        - name: KAFKA_BROKER_ID
+          value: "0"
+        - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE 
+          value: "true"
+        - name: KAFKA_ADVERTISED_LISTENERS 
+          value: PLAINTEXT://34.67.106.181:30718

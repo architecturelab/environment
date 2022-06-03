@@ -1,53 +1,45 @@
 ---
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: zookeeper-prod
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      component: zookeeper-prod
+      app: zookeeper-prod
   template:
     metadata:
       labels:
-        component: zookeeper-prod
+        app: zookeeper-prod
     spec:
       containers:
       - name: zookeeper-prod
-        image: wurstmeister/zookeeper        
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "125m"
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
+        image: wurstmeister/zookeeper
         ports:
-          - containerPort: 2181
-        tty: true
-        livenessProbe:
-          exec:
-            command:
-              - /opt/check.sh
-          initialDelaySeconds: 30
-          periodSeconds: 30
-        readinessProbe:
-          exec:
-            command:
-              - /opt/check.sh
-          initialDelaySeconds: 30
-          periodSeconds: 5
+        - containerPort: 2181
+        env:
+        - name: ZOOKEEPER_ID
+          value: "1"
+        - name: ZOOKEEPER_SERVER_1
+          value: zookeeper-prod
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: zookeeper-ip-service-prod
+  name: zookeeper-prod
+  labels:
+    app: zookeeper-prod
 spec:
-  type: ClusterIP 
-  selector:
-    component: zookeeper-prod
   ports:
-  - name: zookeeper-prod
+  - name: client
     port: 2181
-    targetPort: 2181
+    protocol: TCP
+  - name: follower
+    port: 2888
+    protocol: TCP
+  - name: leader
+    port: 3888
+    protocol: TCP
+  selector:
+    app: zookeeper-prod
