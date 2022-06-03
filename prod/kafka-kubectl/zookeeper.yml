@@ -14,7 +14,7 @@ spec:
         app: zookeeper-prod
     spec:
       containers:
-      - name: zoo1
+      - name: zoo-prod
         image: digitalwonderland/zookeeper
         ports:
         - containerPort: 2181
