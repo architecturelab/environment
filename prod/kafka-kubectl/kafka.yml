@@ -20,7 +20,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-broker-prod
+  name: kafka-prod
 spec:
   replicas: 1
   selector:
@@ -44,7 +44,7 @@ spec:
         - name: KAFKA_ADVERTISED_HOST_NAME
           value: 34.67.106.181
         - name: KAFKA_ZOOKEEPER_CONNECT
-          value: zoo-prod:2181
+          value: zookeeper-prod:2181
         - name: KAFKA_BROKER_ID
           value: "0"
         - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE 

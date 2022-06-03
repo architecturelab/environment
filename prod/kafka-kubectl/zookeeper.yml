@@ -14,7 +14,7 @@ spec:
         app: zookeeper-prod
     spec:
       containers:
-      - name: zoo-prod
+      - name: zookeeper-prod
         image: digitalwonderland/zookeeper
         ports:
         - containerPort: 2181
@@ -22,12 +22,12 @@ spec:
         - name: ZOOKEEPER_ID
           value: "1"
         - name: ZOOKEEPER_SERVER_1
-          value: zoo-prod
+          value: zookeeper-prod
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: zoo-prod
+  name: zookeeper-prod
   labels:
     app: zookeeper-prod
 spec:
