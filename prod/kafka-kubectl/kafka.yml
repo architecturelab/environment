@@ -49,3 +49,6 @@ spec:
           value: "0"
         - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE 
           value: "true"
+        - name: KAFKA_ADVERTISED_LISTENERS 
+          value: PLAINTEXT://34.67.106.181:30718
+          
