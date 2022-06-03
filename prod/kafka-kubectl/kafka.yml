@@ -41,6 +41,7 @@ metadata:
 spec:
   ports:
   - port: 9092
+    nodePort: 30718
     name: kafka-port
     protocol: TCP
   selector:
