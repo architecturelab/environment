@@ -14,8 +14,8 @@ spec:
         component: zookeeper-prod
     spec:
       containers:
-      - name: zookeeper
-        image: pharosproduction/zookeeper_k8s:v4        
+      - name: zookeeper-prod
+        image: wurstmeister/zookeeper        
         resources:
           requests:
             memory: "64Mi"
@@ -38,8 +38,6 @@ spec:
               - /opt/check.sh
           initialDelaySeconds: 30
           periodSeconds: 5
-      imagePullSecrets:
-        - name: regcred
 ---
 apiVersion: v1
 kind: Service

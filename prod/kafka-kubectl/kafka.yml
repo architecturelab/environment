@@ -2,20 +2,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-1-deployment
+  name: kafka-1-prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: kafka-1
+      component: kafka-1-prod
   template:
     metadata:
       labels:
-        component: kafka-1
+        component: kafka-1-prod
     spec:
       containers:
-      - name: kafka-1 
-        image: pharosproduction/kafka_k8s:v1
+      - name: kafka-1-prod 
+        image: wurstmeister/kafka
         resources:
           requests:
             memory: "256Mi"
@@ -57,11 +57,14 @@ kind: Service
 metadata:
   name: kafka-1-ip-service-prod
 spec:
-  type: ClusterIP 
-  selector:
-    component: kafka-1-prod
   ports:
-  - name: kafka
-    port: 9092
-    targetPort: 9092
+  - port: 9092
+    nodePort: 30718
+    name: kafka-port
+    protocol: TCP
+  selector:
+    app: kafka-prod
+    id: "0"
+  type: LoadBalancer
+  loadBalancerIP: "34.67.106.181"
           
